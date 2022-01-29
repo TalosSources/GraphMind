@@ -1,0 +1,7 @@
+Main stuff to do :
+-A tool to read the json files
+-A bunch of analysis tools : Shortest path, node centrality, spanning tree, other interesting stuff.
+-A graphical interface
+-A tool to read and write saves files in my own format (eventually)
+
+All of those steps seem accessible with my knowledge, however they will all take a lotta time.

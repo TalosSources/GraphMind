@@ -17,7 +17,7 @@ interface Node extends Comparable<Node> {
     String url();
 
 
-    default public String print() {
+    default String textRepresentation() {
         return name() + " :\n  Siblings: " + siblings() + "\n  Parents: " + parents() +
                 "\n  Children: " + children() + "\n  Text: " + text() + "\n  Url: " + url() + "\n\n";
     }
@@ -58,12 +58,17 @@ interface UnmodifiableNode extends Node {
     Node withSiblings(Set<Node> siblings);
 
     /**
-     * same
-     * @param parent
-     * @return
+     * Returns a new node, similar to this, but with the parent replaced with the parameter parent
+     * @param parent the new parent
+     * @return a new node with that parent instead of the old one.
      */
     Node withParent(Node parent);
 
+    /**
+     * Returns a new node, similar to this, but with the parents replaced with the parameter parents
+     * @param parents the new parents
+     * @return a new node with those parents instead of the old ones.
+     */
     Node withParents(Set<Node> parents);
 
     Node withChild(Node child);

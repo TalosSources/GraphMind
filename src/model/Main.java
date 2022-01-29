@@ -26,11 +26,11 @@ public class Main {
         connectSiblings(ComputerScience, EPFL);
         connectSiblings(MaterialScience, EPFL);
 
-        System.out.print(Moi.print());
-        System.out.print(ComputerScience.print());
-        System.out.print(EPFL.print());
-        System.out.print(MaterialScience.print());
-        System.out.print(BA3.print());
+        System.out.print(Moi.textRepresentation());
+        System.out.print(ComputerScience.textRepresentation());
+        System.out.print(EPFL.textRepresentation());
+        System.out.print(MaterialScience.textRepresentation());
+        System.out.print(BA3.textRepresentation());
     }
 
     public static void connectParentChild(ModifiableNode parent, ModifiableNode child){

@@ -18,7 +18,6 @@ class SimpleNode implements ModifiableNode {
         this.name = name;
     }
 
-
     @Override
     public Set<Node> siblings() {
         return Set.copyOf(siblings);

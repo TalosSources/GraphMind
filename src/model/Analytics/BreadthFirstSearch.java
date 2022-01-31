@@ -1,4 +1,7 @@
-package model;
+package model.Analytics;
+
+import model.HelperMethods;
+import model.Node;
 
 import java.util.*;
 
@@ -72,7 +75,7 @@ public class BreadthFirstSearch {
             map.put(node, nodeBFS);
         }
         for(NodeBFS nodeBFS : map.values()) {
-//            for(Node sibling : nodeBFS.node.siblings()) nodeBFS.adjacents.add(map.get(sibling));
+            for(Node sibling : nodeBFS.node.siblings()) nodeBFS.adjacents.add(map.get(sibling));
             for(Node parent : nodeBFS.node.parents()) nodeBFS.adjacents.add(map.get(parent));
             for(Node child : nodeBFS.node.children()) nodeBFS.adjacents.add(map.get(child));
         }

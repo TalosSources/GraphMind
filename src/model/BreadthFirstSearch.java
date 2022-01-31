@@ -4,12 +4,12 @@ import java.util.*;
 
 public class BreadthFirstSearch {
 
-    public static void BFSTest(Set<Node> graph0) {
+    public static void BFSTest(Set<Node> graph0, String sourceName) {
         Set<NodeBFS> graph = buildBFSGraph(graph0);
 
         NodeBFS source = null;
         for(NodeBFS node : graph) {
-            if(node.node.name().equals("MaterialScience")) {
+            if(node.node.name().equals(sourceName)) {
                 source = node;
                 break;
             }
@@ -18,11 +18,13 @@ public class BreadthFirstSearch {
 
         breadthFirstSearch(graph, source);
 
-        for(NodeBFS nodeBFS : graph) {
+        List<NodeBFS> listGraph = new ArrayList<>(graph);
+        listGraph.sort(Comparator.comparingInt(c -> c.distance == -1 ? Integer.MAX_VALUE : c.distance));
+        for(NodeBFS nodeBFS : listGraph) {
             Node node = nodeBFS.node;
             System.out.println("Distance between " + source.node.name() +
                     " and " + node.name() + " : " + (
-                    nodeBFS.distance == Integer.MAX_VALUE ? "NOT REACHABLE" :
+                    nodeBFS.distance == -1 ? "NOT REACHABLE" :
                             nodeBFS.distance +
                                     " with path " + (Objects.isNull(nodeBFS.parent) ? "itself" :
                                     HelperMethods.printCollection(pathToVertex(graph, nodeBFS))))

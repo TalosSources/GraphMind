@@ -13,6 +13,7 @@ class SimpleNode implements ModifiableNode {
     private String name;
     private String text;
     private String url;
+    private String id;
 
     public SimpleNode(String name){
         this.name = name;
@@ -49,6 +50,9 @@ class SimpleNode implements ModifiableNode {
     }
 
     @Override
+    public String id() { return id; }
+
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -62,6 +66,9 @@ class SimpleNode implements ModifiableNode {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public void setId(String id) { this.id = id; }
 
     @Override
     public void addSibling(Node sibling) {
@@ -95,7 +102,7 @@ class SimpleNode implements ModifiableNode {
 
     @Override
     public int compareTo(Node o) {
-        return name().compareTo(o.name());
+        return id().compareTo(o.id());
     }
 
     @Override

@@ -15,6 +15,7 @@ interface Node extends Comparable<Node> {
     String name();
     String text();
     String url();
+    String id();
 
 
     default String textRepresentation() {
@@ -28,6 +29,7 @@ interface ModifiableNode extends Node {
     void setName(String name);
     void setText(String text);
     void setUrl(String url);
+    void setId(String id); //In principle shouldn't be changed
 
     void addSibling(Node sibling);
     void addParent(Node parent);

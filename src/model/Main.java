@@ -8,18 +8,9 @@ import static model.BreadthFirstSearch.BFSTest;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        File sourceFile = new File("C:\\CoolProjectsToAdvanceOneDay\\GraphMind\\TheBrainSave\\thoughts.json");
-        FileReader fr = new FileReader(sourceFile);
-        BufferedReader br = new BufferedReader(fr);
-
-        String jsonString = br.readLine().substring(1);
-        JSONObject object = new JSONObject(jsonString);
-        System.out.println(object.get("Name"));
-        while(br.ready()) {
-            jsonString = br.readLine();
-            object = new JSONObject(jsonString);
-            System.out.println(object.get("Name"));
-        }
+        String jsonDirectory = "C:\\CoolProjectsToAdvanceOneDay\\GraphMind\\TheBrainSave\\";
+        Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
+        BreadthFirstSearch.BFSTest(graph, "Philosophie");
     }
 
     public static void simpleGraphTest() {

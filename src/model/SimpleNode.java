@@ -112,6 +112,7 @@ class SimpleNode implements ModifiableNode {
 
     public String textRepresentation() {
         return name + " :\n  Siblings: " + siblings + "\n  Parents: " + parents +
-                "\n  Children: " + children + "\n  Text: " + text + "\n  Url: " + url + "\n\n";
+                "\n  Children: " + children + "\n  Text: " + text + "\n  Url: " + url + "\n"
+                +  "|-------------------------------------------------------------------------------------------|\n";
     }
 }

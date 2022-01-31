@@ -1,23 +1,19 @@
 package model;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class Main {
 
     public static void main(String[] args){
-        String jsonDirectory = null;
-        try {
-            jsonDirectory = new BufferedReader(new FileReader(new File("jsonLocation"))).readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String jsonDirectory = HelperMethods.contentOfFile("jsonLocation");
         Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
 
+        writeTextRepresentation(graph);
+
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
-        bfs.BFSTest("VirtualReality");
+        bfs.BFSTest("Science");
     }
 
     public static void simpleGraphTest() {
@@ -62,6 +58,17 @@ public class Main {
     public static void connectSiblings(ModifiableNode s1, ModifiableNode s2) {
         s1.addSibling(s2);
         s2.addSibling(s1);
+    }
+
+    public static void writeTextRepresentation(Set<Node> graph) {
+        try {
+            FileWriter fw = new FileWriter(new File("brain.txt"));
+            for(Node node : graph) {
+                fw.write(node.textRepresentation());
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 }
 

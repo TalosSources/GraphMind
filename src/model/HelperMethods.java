@@ -1,5 +1,8 @@
 package model;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 
 public class HelperMethods {
@@ -11,5 +14,16 @@ public class HelperMethods {
         if(!collection.isEmpty()) sb.delete(sb.length() - 2, sb.length());
 
         return sb.append(']').toString();
+    }
+
+    public static String contentOfFile(String path) {
+        String content = null;
+        try {
+            content = Files.readString(Path.of(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return content;
     }
 }

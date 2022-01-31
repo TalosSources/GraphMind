@@ -1,16 +1,14 @@
 package model;
-import java.io.*;
 import java.util.*;
-import org.json.*;
-
-import static model.BreadthFirstSearch.BFSTest;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         String jsonDirectory = "C:\\CoolProjectsToAdvanceOneDay\\GraphMind\\TheBrainSave\\";
         Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
-        BreadthFirstSearch.BFSTest(graph, "Philosophie");
+
+        BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
+        bfs.BFSTest("VirtualReality");
     }
 
     public static void simpleGraphTest() {
@@ -20,8 +18,6 @@ public class Main {
     }
 
     public static Set<Node> simpleGraph() {
-        Set<Node> graph = new TreeSet<>();
-
         ModifiableNode Moi = new SimpleNode("Moi");
         ModifiableNode ComputerScience = new SimpleNode("CompSci");
         ModifiableNode EPFL = new SimpleNode("EPFL");

@@ -3,21 +3,21 @@ package model;
 import java.util.*;
 
 public class BreadthFirstSearch {
+    final private Set<NodeBFS> graph;
 
-    public static void BFSTest(Set<Node> graph0, String sourceName) {
-        Set<NodeBFS> graph = buildBFSGraph(graph0);
+    public BreadthFirstSearch(Set<Node> graph) {
+        this.graph = buildBFSGraph(graph);
+    }
 
-        NodeBFS source = null;
-        for(NodeBFS node : graph) {
-            if(node.node.name().equals(sourceName)) {
-                source = node;
-                break;
-            }
-        }
-        if(source == null) throw new IllegalStateException("Source not found :(");
+    public void BFSTest(String sourceName) {
+        NodeBFS source = initBFS(sourceName);
 
-        breadthFirstSearch(graph, source);
+        breadthFirstSearch(source);
 
+        printBFSResult(source);
+    }
+
+    public void printBFSResult(NodeBFS source) {
         List<NodeBFS> listGraph = new ArrayList<>(graph);
         listGraph.sort(Comparator.comparingInt(c -> c.distance == -1 ? Integer.MAX_VALUE : c.distance));
         for(NodeBFS nodeBFS : listGraph) {
@@ -27,12 +27,24 @@ public class BreadthFirstSearch {
                     nodeBFS.distance == -1 ? "NOT REACHABLE" :
                             nodeBFS.distance +
                                     " with path " + (Objects.isNull(nodeBFS.parent) ? "itself" :
-                                    HelperMethods.printCollection(pathToVertex(graph, nodeBFS))))
+                                    HelperMethods.printCollection(pathToVertex(nodeBFS))))
             ); }
     }
 
-    private static void breadthFirstSearch(Set<NodeBFS> borderGraph, NodeBFS source) {
-        for(NodeBFS c : borderGraph) {
+    public NodeBFS initBFS(String sourceName) {
+        NodeBFS source = null;
+        for(NodeBFS node : graph) {
+            if(node.node.name().equals(sourceName)) {
+                source = node;
+                break;
+            }
+        }
+        if(source == null) throw new IllegalStateException("Source not found :(");
+        return source;
+    }
+
+    private void breadthFirstSearch(NodeBFS source) {
+        for(NodeBFS c : graph) {
             c.parent = null;
             c.distance = -1;
         }
@@ -68,7 +80,7 @@ public class BreadthFirstSearch {
         return new TreeSet<>(map.values());
     }
 
-    private static List<Node> pathToVertex(Set<NodeBFS> graph, NodeBFS source) {
+    private static List<Node> pathToVertex(NodeBFS source) {
         List<Node> path = new LinkedList<>();
         while(source.distance != 0) {
             path.add(0, source.node);

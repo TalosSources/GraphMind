@@ -1,13 +1,25 @@
 package model;
-
+import java.io.*;
 import java.util.*;
+import org.json.*;
 
 import static model.BreadthFirstSearch.BFSTest;
 
 public class Main {
 
-    public static void main(String[] args) {
-        BFSTest(simpleGraph());
+    public static void main(String[] args) throws IOException {
+        File sourceFile = new File("C:\\CoolProjectsToAdvanceOneDay\\GraphMind\\TheBrainSave\\thoughts.json");
+        FileReader fr = new FileReader(sourceFile);
+        BufferedReader br = new BufferedReader(fr);
+
+        String jsonString = br.readLine().substring(1);
+        JSONObject object = new JSONObject(jsonString);
+        System.out.println(object.get("Name"));
+        while(br.ready()) {
+            jsonString = br.readLine();
+            object = new JSONObject(jsonString);
+            System.out.println(object.get("Name"));
+        }
     }
 
     public static void simpleGraphTest() {

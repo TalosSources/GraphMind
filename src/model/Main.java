@@ -1,10 +1,11 @@
 package model;
+import java.io.File;
 import java.util.*;
 
 public class Main {
 
     public static void main(String[] args){
-        String jsonDirectory = "C:\\CoolProjectsToAdvanceOneDay\\GraphMind\\TheBrainSave\\";
+        String jsonDirectory = new File("jsonLocation").toString();
         Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
 
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);

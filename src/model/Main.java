@@ -1,11 +1,19 @@
 package model;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
 
     public static void main(String[] args){
-        String jsonDirectory = new File("jsonLocation").toString();
+        String jsonDirectory = null;
+        try {
+            jsonDirectory = new BufferedReader(new FileReader(new File("jsonLocation"))).readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
 
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);

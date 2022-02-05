@@ -12,8 +12,9 @@ public class Main {
         String jsonDirectory = HelperMethods.contentOfFile("jsonLocation");
         Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
 
-//        writeTextRepresentation(graph);
+        writeTextRepresentation(graph);
 
+        /**
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
         bfs.BFSTest("Science");
 
@@ -24,7 +25,7 @@ public class Main {
         listGraph.sort(Comparator.comparingDouble(n -> -n.degree()));
         for(Node node : listGraph) {
             System.out.println(node.name() + " : " + node.degree());
-        }
+        } /**/
     }
 
     public static void simpleGraphTest() {

@@ -20,6 +20,13 @@ public class JSONGraphCreator {
             while(sourceReader.ready()) {
                 String jsonString = sourceReader.readLine();
                 JSONObject object = new JSONObject(jsonString);
+                try {
+                    object.getString("ForgottenDateTime");
+                    //System.out.println("Forgotten : " + object.getString("Name"));
+                    continue;
+                } catch (Exception e) {
+                    if(object.getInt("ACType") == 1) continue;
+                }
                 ModifiableNode node = new SimpleNode(object.getString("Name"));
                 node.setId(object.getString("Id"));
                 map.put(node.id(), node);
@@ -37,6 +44,8 @@ public class JSONGraphCreator {
 
                 ModifiableNode nodeA = map.get(object.getString("ThoughtIdA"));
                 ModifiableNode nodeB = map.get(object.getString("ThoughtIdB"));
+                if(Objects.isNull(nodeA) || Objects.isNull(nodeB)) continue; //link with a forgotten thought
+
                 int relationType = object.getInt("Relation");
 
                 if(relationType == 1) {

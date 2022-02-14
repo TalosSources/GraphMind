@@ -26,4 +26,25 @@ public class HelperMethods {
 
         return content;
     }
+
+    public static boolean writeStringToFile(String address, String text) {
+        Path path = Path.of(address);
+        try {
+            Files.writeString(path, text);
+        } catch (IOException e) {
+            System.out.println("Writing error for address " + address);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void deleteDirectory(File directory) {
+        for(File garbage : directory.listFiles()) {
+            if(garbage.isDirectory()) {
+                deleteDirectory(garbage);
+            }
+            garbage.delete();
+        }
+    }
 }

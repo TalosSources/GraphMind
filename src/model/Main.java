@@ -9,17 +9,30 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args){
-        String jsonDirectory = HelperMethods.contentOfFile("jsonLocation");
-        Set<Node> graph = JSONGraphCreator.generateGraph(jsonDirectory);
+        String externalJsonDirectory = HelperMethods.contentOfFile("externalSaveLocation");
+        String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
 
+        /**/
+        Set<Node> graph = JSONSaveManager.generateGraphFromJSON(externalJsonDirectory);
+
+        /**/
+        System.out.println(
+               JSONSaveManager.saveJSONFromGraph(
+                     graph, ownJsonDirectory));
+
+        /**
         writeTextRepresentation(graph);
 
         /**
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
-        bfs.BFSTest("Science");
+        bfs.BFSTest("GraphMind");
+
+        /**
 
         for(Node n : graph)
             if(n.url() != null && n.text() != null) System.out.println(n);
+
+        /**
 
         List<Node> listGraph = new ArrayList<>(graph);
         listGraph.sort(Comparator.comparingDouble(n -> -n.degree()));

@@ -1,18 +1,16 @@
 package model;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.awt.*;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.*;
 
-public class JSONGraphCreator {
-    public static Set<Node> generateGraph(String directory) {
+public class JSONSaveManager {
+    public static Set<Node> generateGraphFromJSON(String directory) {
 
         Map<String, ModifiableNode> map = new TreeMap<>();
-        Desktop desktop = java.awt.Desktop.getDesktop();
 
             //First we use the thought file to create all the nodes
         BufferedReader sourceReader = fileBufferedReader(directory + "thoughts.json");
@@ -20,13 +18,15 @@ public class JSONGraphCreator {
             while(sourceReader.ready()) {
                 String jsonString = sourceReader.readLine();
                 JSONObject object = new JSONObject(jsonString);
+
                 try {
-                    object.getString("ForgottenDateTime");
-                    //System.out.println("Forgotten : " + object.getString("Name"));
+                    object.getString("ForgottenDateTime"); //Filters out forgotten thoughts
                     continue;
-                } catch (Exception e) {
-                    if(object.getInt("ACType") == 1) continue;
-                }
+                } catch (JSONException e) { }
+                try {
+                    if(object.getInt("ACType") == 1) continue; //Filters out private thoughts
+                } catch (JSONException e) { } //If it has no private type value at all, we consider it not private
+
                 ModifiableNode node = new SimpleNode(object.getString("Name"));
                 node.setId(object.getString("Id"));
                 map.put(node.id(), node);
@@ -72,7 +72,7 @@ public class JSONGraphCreator {
                 ModifiableNode node = map.get(object.getString("SourceId"));
 
                 if(Objects.isNull(node)) {
-                    System.out.println("That one's null : " + object.getString("SourceId"));
+                    //System.out.println("That one's null : " + object.getString("SourceId"));
                     continue;
                 }
 
@@ -111,6 +111,79 @@ public class JSONGraphCreator {
         return new TreeSet(map.values());
     }
 
+    public static boolean saveJSONFromGraph(Set<Node> graph, String directory) {
+        File dir = new File(directory);
+        if(!dir.isDirectory()) return false;
+        HelperMethods.deleteDirectory(dir);
+
+        try {
+            BufferedWriter thoughtsWriter = fileBufferedWriter(directory + "thoughts.json");
+            BufferedWriter linksWriter = fileBufferedWriter(directory + "links.json");
+            BufferedWriter attachmentsWriter = fileBufferedWriter(directory + "attachments.json");
+
+            Set<Node> visited = new TreeSet<>();
+
+            for(Node u : graph) {
+                //create the thought
+                visited.add(u);
+                JSONObject thought = new JSONObject();
+                thought.put("Name", u.name());
+                thought.put("Id", u.id());
+                thoughtsWriter.write(thought.toString() + "\n");
+
+                //add the necessary links
+                for(Node v : u.children()) {
+                    writeLink(linksWriter, 1, u, v);
+                }
+                for(Node v : u.siblings()) {
+                    if(visited.contains(v)) continue;
+                    writeLink(linksWriter, 3, u, v);
+                }
+
+                //add the attachments
+                if(!Objects.isNull(u.text())) {
+                    JSONObject text = new JSONObject();
+                    text.put("SourceId", u.id());
+                    text.put("Type", 1);
+                    text.put("Name", "Notes.txt");
+
+                    File thoughtDir = new File(directory + u.id());
+                    thoughtDir.mkdirs();
+
+                    attachmentsWriter.write(text.toString() + "\n");
+                    HelperMethods.writeStringToFile(thoughtDir.getAbsolutePath() + "\\Notes.txt", u.text());
+                }
+
+                if(!Objects.isNull(u.url())) {
+                    JSONObject url = new JSONObject();
+                    url.put("SourceId", u.id());
+                    url.put("Type", 3);
+                    url.put("Location", u.url());
+                    attachmentsWriter.write(url.toString() + "\n");
+                }
+            }
+
+            thoughtsWriter.flush();
+            thoughtsWriter.close();
+            linksWriter.flush();
+            linksWriter.close();
+            attachmentsWriter.flush();
+            attachmentsWriter.close();
+        } catch (IOException ioe) {
+            return false;
+        }
+
+        return true; //return values indicates whether everything went well
+    }
+
+    public static void writeLink(BufferedWriter out, int relation, Node u, Node v) throws IOException {
+        JSONObject link = new JSONObject();
+        link.put("ThoughtIdA", u.id());
+        link.put("ThoughtIdB", v.id());
+        link.put("Relation", relation);
+        out.write(link.toString() + "\n");
+    }
+
     public static BufferedReader fileBufferedReader(String directory) {
         File sourceFile = new File(directory);
 
@@ -122,5 +195,18 @@ public class JSONGraphCreator {
         }
 
         return new BufferedReader(fileReader);
+    }
+
+    public static BufferedWriter fileBufferedWriter(String directory) {
+        File sourceFile = new File(directory);
+
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(sourceFile);
+        } catch (IOException e) {
+            System.out.println("An error happened during writing :( ");
+        }
+
+        return new BufferedWriter(fileWriter);
     }
 }

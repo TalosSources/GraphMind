@@ -7,8 +7,11 @@ Main stuff to do :
 All of those steps seem accessible with my knowledge, however they will all take a lotta time.
 
 Little Stuff to do :
--Filter out forgotten thoughts, maybe private thoughts too
--Filter out the weird corporate tutorials
+-add the missing or locked features : multiple urls, maybe multiple notes, stuff like that
 
 In notepad : change the encoding from UTF-8 BOM to UTF-8.
 Ideally I would want to do that automatically
+
+The save tool : It would have a button to load a save, that would read json files from a directory inputted by the user,
+that should work with both external jsons and the one we write. We therefore would also have a button to write a json,
+which would write in a format where the only available informations would be the one needed directly by this program.

@@ -2,5 +2,6 @@
 /workspace.xml
 /GraphMindProject.iml
 /.gitignore
-jsonLocation
+externalSaveLocation
+ownSaveLocation
 brain.txt

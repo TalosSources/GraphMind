@@ -12,28 +12,25 @@ public class Main {
         String externalJsonDirectory = HelperMethods.contentOfFile("externalSaveLocation");
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
 
-        /**/
+        /** //Those lines fetch the external save and saves it with the simpler format.
         Set<Node> graph = JSONSaveManager.generateGraphFromJSON(externalJsonDirectory);
+        System.out.println(JSONSaveManager.saveJSONFromGraph(graph, ownJsonDirectory));
 
         /**/
-        System.out.println(
-               JSONSaveManager.saveJSONFromGraph(
-                     graph, ownJsonDirectory));
+        Set<Node> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
 
-        /**
+        /**/
         writeTextRepresentation(graph);
 
-        /**
+        /**/
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
         bfs.BFSTest("GraphMind");
 
         /**
-
         for(Node n : graph)
             if(n.url() != null && n.text() != null) System.out.println(n);
 
         /**
-
         List<Node> listGraph = new ArrayList<>(graph);
         listGraph.sort(Comparator.comparingDouble(n -> -n.degree()));
         for(Node node : listGraph) {

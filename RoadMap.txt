@@ -1,8 +1,8 @@
 Main stuff to do :
--A tool to read the json files
+-A tool to read the json files [DONE]
 -A bunch of analysis tools : Shortest path, node centrality, spanning tree, other interesting stuff.
 -A graphical interface
--A tool to read and write saves files in my own format (eventually)
+-A tool to read and write saves files in my own format (eventually) [DONE]
 
 All of those steps seem accessible with my knowledge, however they will all take a lotta time.
 
@@ -13,5 +13,5 @@ In notepad : change the encoding from UTF-8 BOM to UTF-8.
 Ideally I would want to do that automatically
 
 The save tool : It would have a button to load a save, that would read json files from a directory inputted by the user,
-that should work with both external jsons and the one we write. We therefore would also have a button to write a json,
+that should work with both external jsons and the ones we write. We therefore would also have a button to write a json,
 which would write in a format where the only available informations would be the one needed directly by this program.

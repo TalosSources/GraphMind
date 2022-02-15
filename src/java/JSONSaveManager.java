@@ -1,13 +1,16 @@
-package model;
+package java;
 
+import java.model.ModifiableNode;
+import java.model.Node;
+import java.model.SimpleNode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
 
 public class JSONSaveManager {
+
     public static Set<Node> generateGraphFromJSON(String directory) {
 
         Map<String, ModifiableNode> map = new TreeMap<>();
@@ -108,7 +111,7 @@ public class JSONSaveManager {
         }
 
 
-        return new TreeSet(map.values());
+        return new TreeSet<>(map.values());
     }
 
     public static boolean saveJSONFromGraph(Set<Node> graph, String directory) {

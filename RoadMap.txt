@@ -12,6 +12,15 @@ Little Stuff to do :
 In notepad : change the encoding from UTF-8 BOM to UTF-8.
 Ideally I would want to do that automatically
 
+List of features that should be available in the client :
+-See a thought, its text + url, children, parents and siblings
+-Link 2 thoughts together, with different bound types, and unlink them too
+    --> In fact we can choose between 4 states : parent-child, child-parent, siblings, and unrelated.
+-navigate from a thought to others
+-search thoughts by name
+-load and save graph
+-perform analytics
+
 The save tool : It would have a button to load a save, that would read json files from a directory inputted by the user,
 that should work with both external jsons and the ones we write. We therefore would also have a button to write a json,
 which would write in a format where the only available informations would be the one needed directly by this program.

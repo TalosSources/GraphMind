@@ -1,5 +1,9 @@
-package model;
-import model.Analytics.BreadthFirstSearch;
+package java;
+
+import java.analytics.BreadthFirstSearch;
+import java.model.ModifiableNode;
+import java.model.Node;
+import java.model.SimpleNode;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,8 +17,8 @@ public class Main {
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
 
         /** //Those lines fetch the external save and saves it with the simpler format.
-        Set<Node> graph = JSONSaveManager.generateGraphFromJSON(externalJsonDirectory);
-        System.out.println(JSONSaveManager.saveJSONFromGraph(graph, ownJsonDirectory));
+        Set<Node> graph = java.JSONSaveManager.generateGraphFromJSON(externalJsonDirectory);
+        System.out.println(java.JSONSaveManager.saveJSONFromGraph(graph, ownJsonDirectory));
 
         /**/
         Set<Node> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
@@ -24,7 +28,7 @@ public class Main {
 
         /**/
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
-        bfs.BFSTest("GraphMind");
+        bfs.BFSTest("EPFL");
 
         /**
         for(Node n : graph)

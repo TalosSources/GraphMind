@@ -1,7 +1,7 @@
-package model.Analytics;
+package java.analytics;
 
-import model.HelperMethods;
-import model.Node;
+import java.HelperMethods;
+import java.model.Node;
 
 import java.util.*;
 

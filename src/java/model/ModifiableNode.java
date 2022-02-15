@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 public interface ModifiableNode extends Node {
     //setters
@@ -16,6 +16,11 @@ public interface ModifiableNode extends Node {
 
     void addChild(Node children);
 
+    /**
+     * The remove methods should do nothing when there's no link to remove.
+     * @param sibling
+     * @return
+     */
     boolean removeSibling(Node sibling);
 
     boolean removeParent(Node parent);

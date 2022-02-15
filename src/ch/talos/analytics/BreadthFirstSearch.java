@@ -1,14 +1,14 @@
-package java.analytics;
+package ch.talos.analytics;
 
-import java.HelperMethods;
-import java.model.Node;
+import ch.talos.model.Node;
+import ch.talos.HelperMethods;
 
 import java.util.*;
 
 public class BreadthFirstSearch {
     final private Set<NodeBFS> graph;
 
-    public BreadthFirstSearch(Set<Node> graph) {
+    public BreadthFirstSearch(Set<? extends Node> graph) {
         this.graph = buildBFSGraph(graph);
     }
 
@@ -68,7 +68,7 @@ public class BreadthFirstSearch {
         }
     }
 
-    private static Set<NodeBFS> buildBFSGraph(Set<Node> graph) {
+    private static Set<NodeBFS> buildBFSGraph(Set<? extends Node> graph) {
         Map<Node, NodeBFS> map = new TreeMap<>();
         for(Node node : graph) {
             NodeBFS nodeBFS = new NodeBFS(node);

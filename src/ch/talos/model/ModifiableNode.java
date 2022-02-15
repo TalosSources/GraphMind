@@ -1,4 +1,4 @@
-package java.model;
+package ch.talos.model;
 
 public interface ModifiableNode extends Node {
     //setters

@@ -1,8 +1,8 @@
-package java;
+package ch.talos;
 
-import java.model.ModifiableNode;
-import java.model.Node;
-import java.model.SimpleNode;
+import ch.talos.model.ModifiableNode;
+import ch.talos.model.Node;
+import ch.talos.model.SimpleNode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +11,7 @@ import java.util.*;
 
 public class JSONSaveManager {
 
-    public static Set<Node> generateGraphFromJSON(String directory) {
+    public static Set<ModifiableNode> generateGraphFromJSON(String directory) {
 
         Map<String, ModifiableNode> map = new TreeMap<>();
 
@@ -83,7 +83,7 @@ public class JSONSaveManager {
                 switch(object.getInt("Type")) {
                     case 1 :
                         String name = object.getString("Name");
-                        if(name.equals("Notes.md")) {
+                        if(name.equals("Notes.md") || name.equals("Notes.txt")) {
                             String text = HelperMethods.contentOfFile(directory + node.id() + "\\" + name);
                             node.setText(text);
                         }
@@ -114,7 +114,7 @@ public class JSONSaveManager {
         return new TreeSet<>(map.values());
     }
 
-    public static boolean saveJSONFromGraph(Set<Node> graph, String directory) {
+    public static boolean saveJSONFromGraph(Set<? extends Node> graph, String directory) {
         File dir = new File(directory);
         if(!dir.isDirectory()) return false;
         HelperMethods.deleteDirectory(dir);

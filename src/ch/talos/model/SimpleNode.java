@@ -1,4 +1,4 @@
-package java.model;
+package ch.talos.model;
 import java.util.Set;
 import java.util.TreeSet;
 

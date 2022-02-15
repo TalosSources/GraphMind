@@ -1,4 +1,4 @@
-package java.model;
+package ch.talos.model;
 
 import java.util.List;
 import java.util.Set;

@@ -1,4 +1,4 @@
-package java;
+package ch.talos;
 
 import java.io.*;
 import java.nio.file.Files;

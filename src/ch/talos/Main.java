@@ -9,6 +9,7 @@ import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
@@ -21,6 +22,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
+import static javafx.application.Platform.isFxApplicationThread;
+import static javafx.application.Platform.runLater;
 
 public class Main extends Application {
 
@@ -35,22 +39,49 @@ public class Main extends Application {
 
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
-        Node observedNode = null;
-        for(Node node : graph) if(node.name().equals("Temps")) {
-            observedNode = node;
-            break;
+
+        ModifiableNode moiNode = null;
+        ModifiableNode computerScience = null;
+        ModifiableNode virtualReality = null;
+        ModifiableNode carnetDeReves = null;
+        for(ModifiableNode node : graph) {
+            if (node.name().equals("Moi")) moiNode = node;
+            if (node.name().equals("ComputerScience")) computerScience = node;
+            if (node.name().equals("VirtualReality")) virtualReality = node;
+            if (node.name().equals("CarnetDeReves")) carnetDeReves = node;
         }
+
         MutableGraphState graphState = new SimpleGraphState(graph);
 
-        UIState uiState = new SimpleUIState(graphState, observedNode);
+        UIState uiState = new SimpleUIState(graphState, moiNode);
 
         HBox box = GraphViewCreator.graphView(uiState);
-
-        Scene scene = new Scene(box);   //setups the scene with the above
+        Pane pane = new Pane(box);
+        pane.setMaxSize(1200, 1000);
+        Scene scene = new Scene(pane);   //setups the scene with the above
         selectionWindow.setScene(scene);
 
         selectionWindow.show();
 
+        System.out.println("isJavaFxThread? " + isFxApplicationThread());
+
+        ModifiableNode finalComputerScience1 = computerScience;
+        ModifiableNode finalVirtualReality1 = virtualReality;
+        ModifiableNode finalCarnetDeReves = carnetDeReves;
+        long waitTime = 8000;
+        new Thread(() -> {
+            try {
+                Thread.sleep(waitTime);
+                ModifiableNode finalComputerScience = finalComputerScience1;
+                runLater(() -> uiState.updateFocusNode(finalComputerScience));
+                Thread.sleep(waitTime);
+                ModifiableNode finalVirtualReality = finalVirtualReality1;
+                runLater(() -> uiState.updateFocusNode(finalVirtualReality));
+                Thread.sleep(waitTime);
+                ModifiableNode finalCarnet = finalCarnetDeReves;
+                runLater(() -> uiState.updateFocusNode(finalCarnet));
+            } catch(Exception e) {}
+        }).start();
     }
 
     public static void simpleTests() {

@@ -1,5 +1,7 @@
 package ch.talos.model;
 
+import java.util.Set;
+
 public interface ModifiableNode extends Node {
     //setters
     void setName(String name);
@@ -10,20 +12,27 @@ public interface ModifiableNode extends Node {
 
     void setId(String id); //In principle shouldn't be changed
 
-    void addSibling(Node sibling);
+    void addSibling(ModifiableNode sibling);
 
-    void addParent(Node parent);
+    void addParent(ModifiableNode parent);
 
-    void addChild(Node children);
+    void addChild(ModifiableNode children);
+
+    @Override
+    Set<ModifiableNode> siblings();
+    @Override
+    Set<ModifiableNode> parents();
+    @Override
+    Set<ModifiableNode> children();
 
     /**
      * The remove methods should do nothing when there's no link to remove.
      * @param sibling
      * @return
      */
-    boolean removeSibling(Node sibling);
+    boolean removeSibling(ModifiableNode sibling);
 
-    boolean removeParent(Node parent);
+    boolean removeParent(ModifiableNode parent);
 
-    boolean removeChild(Node child);
+    boolean removeChild(ModifiableNode child);
 }

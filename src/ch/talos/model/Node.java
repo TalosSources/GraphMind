@@ -7,9 +7,9 @@ import java.util.Set;
  */
 public interface Node extends Comparable<Node> {
     //connections
-    Set<Node> siblings();
-    Set<Node> parents();
-    Set<Node> children();
+    Set<? extends Node> siblings();
+    Set<? extends Node> parents();
+    Set<? extends Node> children();
 
     //properties
     String name();

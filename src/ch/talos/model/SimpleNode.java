@@ -6,9 +6,9 @@ import java.util.TreeSet;
  * Simple node implementation using TreeSets.
  */
 public class SimpleNode implements ModifiableNode {
-    final private Set<Node> siblings = new TreeSet<>();
-    final private Set<Node> parents = new TreeSet<>();
-    final private Set<Node> children = new TreeSet<>();
+    final private Set<ModifiableNode> siblings = new TreeSet<>();
+    final private Set<ModifiableNode> parents = new TreeSet<>();
+    final private Set<ModifiableNode> children = new TreeSet<>();
 
     private String name;
     private String text;
@@ -20,17 +20,17 @@ public class SimpleNode implements ModifiableNode {
     }
 
     @Override
-    public Set<Node> siblings() {
+    public Set<ModifiableNode> siblings() {
         return Set.copyOf(siblings);
     }
 
     @Override
-    public Set<Node> parents() {
+    public Set<ModifiableNode> parents() {
         return Set.copyOf(parents);
     }
 
     @Override
-    public Set<Node> children() {
+    public Set<ModifiableNode> children() {
         return Set.copyOf(children);
     }
 
@@ -71,32 +71,32 @@ public class SimpleNode implements ModifiableNode {
     public void setId(String id) { this.id = id; }
 
     @Override
-    public void addSibling(Node sibling) {
+    public void addSibling(ModifiableNode sibling) {
         siblings.add(sibling);
     }
 
     @Override
-    public void addParent(Node parent) {
+    public void addParent(ModifiableNode parent) {
         parents.add(parent);
     }
 
     @Override
-    public void addChild(Node child) {
+    public void addChild(ModifiableNode child) {
         children.add(child);
     }
 
     @Override
-    public boolean removeSibling(Node sibling) {
+    public boolean removeSibling(ModifiableNode sibling) {
         return siblings.remove(sibling);
     }
 
     @Override
-    public boolean removeParent(Node parent) {
+    public boolean removeParent(ModifiableNode parent) {
         return parents.remove(parent);
     }
 
     @Override
-    public boolean removeChild(Node child) {
+    public boolean removeChild(ModifiableNode child) {
         return children.remove(child);
     }
 

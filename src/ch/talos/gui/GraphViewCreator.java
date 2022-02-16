@@ -1,13 +1,16 @@
 package ch.talos.gui;
 
 import ch.talos.model.Node;
+import com.sun.javafx.geom.BaseBounds;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +19,9 @@ public final class GraphViewCreator {
     public static HBox graphView(UIState uiState) {
         HBox box = new HBox();
 
-        ObservableList<Node> siblingsList =
-                FXCollections.observableList(new ArrayList(uiState.getFocusNode().siblings()));
-        ObservableList<Node> childrenList =
-                FXCollections.observableList(new ArrayList(uiState.getFocusNode().children()));
-        ObservableList<Node> parentsList =
-                FXCollections.observableList(new ArrayList(uiState.getFocusNode().parents()));
+        ObservableList<? extends Node> siblingsList = uiState.siblings();
+        ObservableList<? extends Node> childrenList = uiState.children();
+        ObservableList<? extends Node> parentsList = uiState.parents();
 
         ListView siblings = new ListView(siblingsList);
         ListView children = new ListView(childrenList);
@@ -35,12 +35,14 @@ public final class GraphViewCreator {
         VBox childrenBox = new VBox(childrenLabel, children);
         VBox parentsBox = new VBox(parentsLabel, parents);
 
-        Button nodeButton = new Button(uiState.getFocusNode().name());
-        Label text = new Label(uiState.getFocusNode().text());
+        Button nodeButton = new Button();
+        nodeButton.textProperty().bind(uiState.focusNodeProperty().asString());
+        Text text = new Text();
+        text.textProperty().bind(uiState.focusNodeTextProperty());
+
         TextField urlField = new TextField(uiState.getFocusNode().url());
         urlField.setEditable(false);
-        Label url = new Label(uiState.getFocusNode().url());
-        text.setMaxWidth(500);
+        text.setWrappingWidth(400);
 
         box.getChildren().add(siblingsBox);
         box.getChildren().add(childrenBox);

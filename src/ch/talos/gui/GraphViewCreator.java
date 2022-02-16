@@ -1,31 +1,20 @@
 package ch.talos.gui;
 
-import ch.talos.model.Node;
-import com.sun.javafx.geom.BaseBounds;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Group;
+import ch.talos.model.ModifiableNode;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBoundsType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class GraphViewCreator {
+    public static int switched = 10;
     public static HBox graphView(UIState uiState) {
         HBox box = new HBox();
 
-        ObservableList<? extends Node> siblingsList = uiState.siblings();
-        ObservableList<? extends Node> childrenList = uiState.children();
-        ObservableList<? extends Node> parentsList = uiState.parents();
+        ListView<ModifiableNode> siblings = new ListView(uiState.siblings());
+        ListView children = new ListView(uiState.children());
+        ListView parents = new ListView(uiState.parents());
 
-        ListView siblings = new ListView(siblingsList);
-        ListView children = new ListView(childrenList);
-        ListView parents = new ListView(parentsList);
 
         Label siblingsLabel = new Label("Siblings");
         Label childrenLabel = new Label("Children");
@@ -35,10 +24,15 @@ public final class GraphViewCreator {
         VBox childrenBox = new VBox(childrenLabel, children);
         VBox parentsBox = new VBox(parentsLabel, parents);
 
+        Button changeButton = new Button("Go to selected node");
+        changeButton.onActionProperty().set(
+                e -> uiState.updateFocusNode(siblings.getSelectionModel().getSelectedItem()));
+
         Button nodeButton = new Button();
         nodeButton.textProperty().bind(uiState.focusNodeProperty().asString());
         Text text = new Text();
         text.textProperty().bind(uiState.focusNodeTextProperty());
+        HBox buttons = new HBox(nodeButton, changeButton);
 
         TextField urlField = new TextField(uiState.getFocusNode().url());
         urlField.setEditable(false);
@@ -52,7 +46,7 @@ public final class GraphViewCreator {
         Separator sep2 = new Separator();
 
         VBox vbox = new VBox();
-        vbox.getChildren().add(nodeButton);
+        vbox.getChildren().add(buttons);
         vbox.getChildren().add(sep);
         vbox.getChildren().add(text);
         vbox.getChildren().add(sep2);

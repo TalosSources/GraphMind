@@ -53,7 +53,7 @@ public class Main extends Application {
 
         MutableGraphState graphState = new SimpleGraphState(graph);
 
-        UIState uiState = new SimpleUIState(graphState, moiNode);
+        UIState uiState = new SimpleUIState(graphState, computerScience);
 
         HBox box = GraphViewCreator.graphView(uiState);
         Pane pane = new Pane(box);
@@ -81,7 +81,7 @@ public class Main extends Application {
                 ModifiableNode finalCarnet = finalCarnetDeReves;
                 runLater(() -> uiState.updateFocusNode(finalCarnet));
             } catch(Exception e) {}
-        }).start();
+        });
     }
 
     public static void simpleTests() {

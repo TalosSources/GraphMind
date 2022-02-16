@@ -25,11 +25,15 @@ public interface UIState {
 
     ObservableList<ModifiableNode> parents();
 
+    ObservableList<ModifiableNode> childrenOfParents();
+
     ObjectProperty<ModifiableNode> focusNodeProperty();
 
     ObjectProperty<ModifiableNode> selectedNodeProperty();
 
-    StringProperty focusNodeTextProperty();
+    StringProperty selectedNodeTextProperty();
+
+    StringProperty selectedNodeUrlProperty();
 }
 
 

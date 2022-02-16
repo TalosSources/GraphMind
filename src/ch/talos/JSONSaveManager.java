@@ -26,9 +26,9 @@ public class JSONSaveManager {
                     object.getString("ForgottenDateTime"); //Filters out forgotten thoughts
                     continue;
                 } catch (JSONException e) { }
-                try {
+                /**try {
                     if(object.getInt("ACType") == 1) continue; //Filters out private thoughts
-                } catch (JSONException e) { } //If it has no private type value at all, we consider it not private
+                } catch (JSONException e) { } //If it has no private type value at all, we consider it not private*/
 
                 ModifiableNode node = new SimpleNode(object.getString("Name"));
                 node.setId(object.getString("Id"));

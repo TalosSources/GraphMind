@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class SimpleUIState implements UIState {
     private final MutableGraphState graphState;
@@ -17,11 +18,13 @@ public final class SimpleUIState implements UIState {
     private final ObjectProperty<ModifiableNode> focusNodeProperty;
     private final ObjectProperty<ModifiableNode> selectedNodeProperty;
 
-    private final StringProperty focusNodeTextProperty;
+    private final StringProperty selectedNodeTextProperty;
+    private final StringProperty selectedNodeUrlProperty;
 
     private final ObservableList<ModifiableNode> siblings;
     private final ObservableList<ModifiableNode> children;
     private final ObservableList<ModifiableNode> parents;
+    private final ObservableList<ModifiableNode> childrenOfParents;
 
     public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode) {
         this.focusNodeProperty = new SimpleObjectProperty<>();
@@ -29,14 +32,17 @@ public final class SimpleUIState implements UIState {
         this.selectedNodeProperty = new SimpleObjectProperty<>();
         this.selectedNodeProperty.set(focusNode);
 
-        this.focusNodeTextProperty = new SimpleStringProperty();
-        this.focusNodeTextProperty.set(focusNode.text());
+        this.selectedNodeTextProperty = new SimpleStringProperty();
+        this.selectedNodeTextProperty.set(focusNode.text());
+        this.selectedNodeUrlProperty = new SimpleStringProperty();
+        this.selectedNodeUrlProperty.set(focusNode.url());
 
         this.graphState = gs;
 
         siblings = FXCollections.observableArrayList(new ArrayList<>(focusNode.siblings()));
         children = FXCollections.observableArrayList(new ArrayList<>(focusNode.children()));
         parents = FXCollections.observableArrayList(new ArrayList<>(focusNode.parents()));
+        childrenOfParents = FXCollections.observableArrayList(childrenOfParents(focusNode));
     }
 
     @Override
@@ -45,12 +51,15 @@ public final class SimpleUIState implements UIState {
         siblings.setAll(node.siblings());
         children.setAll(node.children());
         parents.setAll(node.parents());
-        focusNodeTextProperty.set(node.text());
+        childrenOfParents.setAll(childrenOfParents(node));
+        updateSelectedNode(node);
     }
 
     @Override
     public void updateSelectedNode(ModifiableNode node) {
         selectedNodeProperty.set(node);
+        selectedNodeTextProperty.set(node.text());
+        selectedNodeUrlProperty.set(node.url());
     }
 
     @Override
@@ -94,7 +103,26 @@ public final class SimpleUIState implements UIState {
     }
 
     @Override
-    public StringProperty focusNodeTextProperty() {
-        return focusNodeTextProperty;
+    public StringProperty selectedNodeTextProperty() {
+        return selectedNodeTextProperty;
+    }
+
+    @Override
+    public StringProperty selectedNodeUrlProperty() {
+        return selectedNodeUrlProperty;
+    }
+
+    @Override
+    public ObservableList<ModifiableNode> childrenOfParents() {
+        return childrenOfParents;
+    }
+
+    private static List<ModifiableNode> childrenOfParents(ModifiableNode node) {
+        List<ModifiableNode> cOP = new ArrayList<>();
+        for(ModifiableNode parent : node.parents())
+            for(ModifiableNode childOfParent : parent.children())
+                if(!childOfParent.equals(node))cOP.add(childOfParent);
+
+        return cOP;
     }
 }

@@ -30,6 +30,7 @@ public class Main extends Application {
 
     public static void main(String[] args){
         launch(args);
+//        simpleTests();
     }
 
     @Override
@@ -41,47 +42,23 @@ public class Main extends Application {
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
 
         ModifiableNode moiNode = null;
-        ModifiableNode computerScience = null;
-        ModifiableNode virtualReality = null;
-        ModifiableNode carnetDeReves = null;
         for(ModifiableNode node : graph) {
             if (node.name().equals("Moi")) moiNode = node;
-            if (node.name().equals("ComputerScience")) computerScience = node;
-            if (node.name().equals("VirtualReality")) virtualReality = node;
-            if (node.name().equals("CarnetDeReves")) carnetDeReves = node;
+
         }
 
         MutableGraphState graphState = new SimpleGraphState(graph);
 
-        UIState uiState = new SimpleUIState(graphState, computerScience);
+        UIState uiState = new SimpleUIState(graphState, moiNode);
 
-        HBox box = GraphViewCreator.graphView(uiState);
-        Pane pane = new Pane(box);
-        pane.setMaxSize(1200, 1000);
-        Scene scene = new Scene(pane);   //setups the scene with the above
+        Pane mainPane = GraphViewCreator.graphView(uiState);
+        mainPane.setPrefSize(1200, 600);
+        Scene scene = new Scene(mainPane);   //setups the scene with the above
         selectionWindow.setScene(scene);
 
         selectionWindow.show();
 
         System.out.println("isJavaFxThread? " + isFxApplicationThread());
-
-        ModifiableNode finalComputerScience1 = computerScience;
-        ModifiableNode finalVirtualReality1 = virtualReality;
-        ModifiableNode finalCarnetDeReves = carnetDeReves;
-        long waitTime = 8000;
-        new Thread(() -> {
-            try {
-                Thread.sleep(waitTime);
-                ModifiableNode finalComputerScience = finalComputerScience1;
-                runLater(() -> uiState.updateFocusNode(finalComputerScience));
-                Thread.sleep(waitTime);
-                ModifiableNode finalVirtualReality = finalVirtualReality1;
-                runLater(() -> uiState.updateFocusNode(finalVirtualReality));
-                Thread.sleep(waitTime);
-                ModifiableNode finalCarnet = finalCarnetDeReves;
-                runLater(() -> uiState.updateFocusNode(finalCarnet));
-            } catch(Exception e) {}
-        });
     }
 
     public static void simpleTests() {

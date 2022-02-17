@@ -1,7 +1,14 @@
 package ch.talos.gui;
 
+import ch.talos.analytics.KeySearch;
+import ch.talos.gui.VisualRepresentation.DrawGraph;
 import ch.talos.model.ModifiableNode;
+import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -27,9 +35,9 @@ public final class GraphViewCreator {
      * @return
      */
     public static Pane graphView(UIState uiState) {
-        ListView<ModifiableNode> siblings = new ListView(uiState.siblings());
-        ListView<ModifiableNode> children = new ListView(uiState.children());
-        ListView<ModifiableNode> parents = new ListView(uiState.parents());
+        ListView<ModifiableNode> siblings = new ListView<>(uiState.siblings());
+        ListView<ModifiableNode> children = new ListView<>(uiState.children());
+        ListView<ModifiableNode> parents = new ListView<>(uiState.parents());
         ListView<ModifiableNode> childrenOfParents = new ListView<>(uiState.childrenOfParents());
 
         siblings.onMouseClickedProperty().set(buttonEvent(siblings, uiState));
@@ -82,6 +90,10 @@ public final class GraphViewCreator {
             }
         });
 
+        Button drawingButton = new Button("Graph Visualisation");
+        drawingButton.setOnAction(event -> new Thread(() ->
+                DrawGraph.performDrawing(uiState.graphState(), uiState.getFocusNode())).start());
+
         HBox listsBox = new HBox();
         listsBox.getChildren().add(parentsBox);
         listsBox.getChildren().add(childrenBox);
@@ -99,10 +111,33 @@ public final class GraphViewCreator {
         vbox.getChildren().add(urlField);
         vbox.getChildren().add(urlButton);
 
-        VBox listAndName = new VBox(focusedNodeName, new Separator(), listsBox);
-        HBox finalBox = new HBox(listAndName, vbox);
+        Button b1 = new Button("B1"); Button b2 = new Button("B2");
+        b2.translateYProperty().set(150);
+        Line line = new Line();
+        line.startXProperty().bind(Bindings.add(b1.translateXProperty(), 10));
+        line.endXProperty().bind(Bindings.add(b2.translateXProperty(), 10));
+        line.startYProperty().bind(Bindings.add(b1.translateYProperty(), 10));
+        line.endYProperty().bind(Bindings.add(b2.translateYProperty(), 10));
+        Group group = new Group(b1, b2, line);
 
-        return finalBox;
+        VBox listAndName = new VBox(focusedNodeName, new Separator(), listsBox, new Separator(), drawingButton);
+
+        return new HBox(listAndName, vbox, searchBox(uiState), group);
+    }
+
+    private static Pane searchBox(UIState uiState) {
+        TextField searchField = new TextField();
+        searchField.editableProperty().set(true);
+
+        ObservableList<ModifiableNode> results = FXCollections.observableArrayList();
+        ListView<ModifiableNode> resultsView = new ListView<>(results);
+        resultsView.onMouseClickedProperty().set(buttonEvent(resultsView, uiState));
+
+        searchField.textProperty().addListener(event -> {
+            results.setAll(KeySearch.search(uiState.graphState().getGraph(), searchField.textProperty().get()));
+        });
+
+        return new VBox(searchField, resultsView);
     }
 
     private static EventHandler<? super MouseEvent> buttonEvent(ListView<ModifiableNode> siblings,

@@ -1,17 +1,13 @@
 package ch.talos;
 
+import ch.talos.gui.VisualRepresentation.DrawGraph;
 import ch.talos.gui.GraphViewCreator;
 import ch.talos.gui.SimpleUIState;
 import ch.talos.gui.UIState;
 import ch.talos.model.*;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -24,19 +20,19 @@ import java.io.IOException;
 import java.util.*;
 
 import static javafx.application.Platform.isFxApplicationThread;
-import static javafx.application.Platform.runLater;
 
 public class Main extends Application {
 
     public static void main(String[] args){
         launch(args);
 //        simpleTests();
+//        uglyDrawing();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Stage selectionWindow = new Stage(StageStyle.UTILITY);
-        selectionWindow.initModality(Modality.WINDOW_MODAL);
+        Stage mainWindow = new Stage(StageStyle.DECORATED);
+        mainWindow.initModality(Modality.APPLICATION_MODAL);
 
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
@@ -52,32 +48,40 @@ public class Main extends Application {
         UIState uiState = new SimpleUIState(graphState, moiNode);
 
         Pane mainPane = GraphViewCreator.graphView(uiState);
-        mainPane.setPrefSize(1200, 600);
+        mainPane.setPrefSize(1600, 650);
         Scene scene = new Scene(mainPane);   //setups the scene with the above
-        selectionWindow.setScene(scene);
+        mainWindow.setScene(scene);
 
-        selectionWindow.show();
+        mainWindow.show();
+        mainWindow.setTitle("GraphMind");
 
         System.out.println("isJavaFxThread? " + isFxApplicationThread());
+    }
+
+    public static void uglyDrawing() {
+        String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
+        Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
+        MutableGraphState mgs = new SimpleGraphState(graph);
+        DrawGraph.performDrawing(mgs, null);
     }
 
     public static void simpleTests() {
         String externalJsonDirectory = HelperMethods.contentOfFile("externalSaveLocation");
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
 
-        /**/ //Those lines fetch the external save and saves it with the simpler format.
+        /** //Those lines fetch the external save and saves it with the simpler format.
          Set<ModifiableNode> graph = ch.talos.JSONSaveManager.generateGraphFromJSON(externalJsonDirectory);
          System.out.println(ch.talos.JSONSaveManager.saveJSONFromGraph(graph, ownJsonDirectory));
 
-         /**
+         /**/
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
 
         /**
         writeTextRepresentation(graph);
 
-        /**
+        /**/
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
-        bfs.BFSTest("EPFL");
+        bfs.BFSTest("Pensées");
 
         /**
          for(Node n : graph)

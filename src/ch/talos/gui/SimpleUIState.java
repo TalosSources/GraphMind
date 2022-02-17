@@ -2,6 +2,7 @@ package ch.talos.gui;
 
 import ch.talos.model.ModifiableNode;
 import ch.talos.model.MutableGraphState;
+import ch.talos.model.Node;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -10,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class SimpleUIState implements UIState {
@@ -28,21 +30,23 @@ public final class SimpleUIState implements UIState {
 
     public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode) {
         this.focusNodeProperty = new SimpleObjectProperty<>();
-        this.focusNodeProperty.set(focusNode);
+        //this.focusNodeProperty.set(focusNode);
         this.selectedNodeProperty = new SimpleObjectProperty<>();
-        this.selectedNodeProperty.set(focusNode);
+        //this.selectedNodeProperty.set(focusNode);
 
         this.selectedNodeTextProperty = new SimpleStringProperty();
-        this.selectedNodeTextProperty.set(focusNode.text());
+//        this.selectedNodeTextProperty.set(focusNode.text());
         this.selectedNodeUrlProperty = new SimpleStringProperty();
-        this.selectedNodeUrlProperty.set(focusNode.url());
+//        this.selectedNodeUrlProperty.set(focusNode.url());
 
         this.graphState = gs;
 
-        siblings = FXCollections.observableArrayList(new ArrayList<>(focusNode.siblings()));
-        children = FXCollections.observableArrayList(new ArrayList<>(focusNode.children()));
-        parents = FXCollections.observableArrayList(new ArrayList<>(focusNode.parents()));
-        childrenOfParents = FXCollections.observableArrayList(childrenOfParents(focusNode));
+        siblings = FXCollections.observableArrayList();
+        children = FXCollections.observableArrayList();
+        parents = FXCollections.observableArrayList();
+        childrenOfParents = FXCollections.observableArrayList();
+
+        updateFocusNode(focusNode);
     }
 
     @Override
@@ -52,6 +56,10 @@ public final class SimpleUIState implements UIState {
         children.setAll(node.children());
         parents.setAll(node.parents());
         childrenOfParents.setAll(childrenOfParents(node));
+        sortAlphabetically(siblings);
+        sortAlphabetically(children);
+        sortAlphabetically(parents);
+        sortAlphabetically(childrenOfParents);
         updateSelectedNode(node);
     }
 
@@ -121,8 +129,15 @@ public final class SimpleUIState implements UIState {
         List<ModifiableNode> cOP = new ArrayList<>();
         for(ModifiableNode parent : node.parents())
             for(ModifiableNode childOfParent : parent.children())
-                if(!childOfParent.equals(node))cOP.add(childOfParent);
+                if(!childOfParent.equals(node) && !node.siblings().contains(childOfParent) &&
+                !node.children().contains(childOfParent) && !node.parents().contains(childOfParent)
+                && !cOP.contains(childOfParent))
+                    cOP.add(childOfParent);
 
         return cOP;
+    }
+
+    private void sortAlphabetically(ObservableList<ModifiableNode> list) {
+        list.sort(Comparator.comparing(Node::name));
     }
 }

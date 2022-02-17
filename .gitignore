@@ -6,3 +6,5 @@ externalSaveLocation
 ownSaveLocation
 brain.txt
 /src/CrapTest/
+/.run/
+/out/

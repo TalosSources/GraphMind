@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -36,21 +37,18 @@ public class Main extends Application {
         Stage mainWindow = new Stage(StageStyle.DECORATED);
         mainWindow.initModality(Modality.WINDOW_MODAL);
 
-
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
 
         ModifiableNode moiNode = null;
-        for(ModifiableNode node : graph) {
+        for(ModifiableNode node : graph)
             if (node.name().equals("Moi")) moiNode = node;
-
-        }
 
         MutableGraphState graphState = new SimpleGraphState(graph);
 
         UIState uiState = new SimpleUIState(graphState, moiNode);
 
-        Pane mainPane = GraphViewCreator.graphView(uiState);
+        Pane mainPane = GraphViewCreator.graphView(uiState, mainWindow);
         mainPane.setPrefSize(1600, 650);
         Scene scene = new Scene(mainPane);   //setups the scene with the above
         mainWindow.setScene(scene);

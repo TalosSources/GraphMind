@@ -24,11 +24,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,7 +47,7 @@ public final class GraphViewCreator {
      * @param uiState
      * @return
      */
-    public static Pane graphView(UIState uiState) {
+    public static Pane graphView(UIState uiState, Window mainWindow) {
         Pane mainGraphPane = graphPane(uiState);
 
         TextField focusedNodeName = new TextField();
@@ -113,7 +116,15 @@ public final class GraphViewCreator {
         });
         VBox buttons = new VBox(drawingButton, addNodeButton, deleteNode);
         buttons.setSpacing(8);
-        HBox drawButtonAndSearchbar = new HBox(buttons, new Separator(), searchBox(uiState));
+
+
+        Button fileChooserButton = new Button("Choose File");
+        FileChooser fileChooser = new FileChooser();
+        fileChooserButton.setOnAction(e -> {
+            File savePlace = fileChooser.showOpenDialog(mainWindow);
+        });
+
+        HBox drawButtonAndSearchbar = new HBox(buttons, new Separator(), searchBox(uiState), fileChooserButton);
 
         VBox listAndName = new VBox(focusedNodeName, new Separator(), mainGraphPane,
                 new Separator(), drawButtonAndSearchbar);

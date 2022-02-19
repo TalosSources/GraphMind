@@ -1,5 +1,6 @@
 package ch.talos.gui;
 
+import ch.talos.JSONSaveManager;
 import ch.talos.model.ModifiableNode;
 import ch.talos.model.MutableGraphState;
 import ch.talos.model.Node;
@@ -31,7 +32,9 @@ public final class SimpleUIState implements UIState {
     private final ObservableList<ModifiableNode> parents;
     private final ObservableList<ModifiableNode> childrenOfParents;
 
-    public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode) {
+    private final StringProperty saveLocation;
+
+    public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode, String saveLocation) {
         this.focusNodeProperty = new SimpleObjectProperty<>();
         this.selectedNodeProperty = new SimpleObjectProperty<>();
 
@@ -39,6 +42,8 @@ public final class SimpleUIState implements UIState {
         this.selectedNodeNameProperty = new SimpleStringProperty();
         this.selectedNodeTextProperty = new SimpleStringProperty();
         this.selectedNodeUrlProperty = new SimpleStringProperty();
+
+        this.saveLocation = new SimpleStringProperty();
 
         this.graphState = gs;
 
@@ -48,6 +53,9 @@ public final class SimpleUIState implements UIState {
         childrenOfParents = FXCollections.observableArrayList();
 
         updateFocusNode(focusNode);
+
+        this.saveLocation.set(saveLocation);
+        //JSONSaveManager.generateGraphFromJSON(this.saveLocation.get());
 
         focusNodeNameProperty.addListener((ov, o, n) ->
                 getFocusNode().setName(focusNodeNameProperty.get()));

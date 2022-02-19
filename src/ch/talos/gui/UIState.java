@@ -13,6 +13,8 @@ public interface UIState {
 
     void updateSelectedNode(ModifiableNode node);
 
+    void refreshLinks();
+
     ModifiableNode getFocusNode();
 
     ModifiableNode getSelectedNode();

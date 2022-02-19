@@ -1,5 +1,6 @@
 package ch.talos.model;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,13 +23,33 @@ public class SimpleGraphState implements MutableGraphState{
     }
 
     @Override
+    public void addNode(ModifiableNode newNode) {
+        graph.add(newNode);
+    }
+
+    @Override
+    public void removeNode(ModifiableNode toRemove) {
+        List<ModifiableNode> toDisconnect = new LinkedList<>();
+        toDisconnect.addAll(toRemove.children());
+        toDisconnect.addAll(toRemove.parents());
+        toDisconnect.addAll(toRemove.siblings());
+
+        for(ModifiableNode n : toDisconnect)
+            disconnectNodes(toRemove, n);
+
+        graph.remove(toRemove);
+    }
+
+    @Override
     public void connectParentChild(ModifiableNode parent, ModifiableNode child) {
+        disconnectNodes(parent, child);
         parent.addChild(child);
         child.addParent(parent);
     }
 
     @Override
     public void connectSiblings(ModifiableNode s1, ModifiableNode s2) {
+        disconnectNodes(s1, s2);
         s1.addSibling(s2);
         s2.addSibling(s1);
     }

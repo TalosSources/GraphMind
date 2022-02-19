@@ -15,11 +15,11 @@ In notepad : change the encoding from UTF-8 BOM to UTF-8.
 Ideally I would want to do that automatically
 
 List of features that should be available in the client :
--See a thought, its text + url, children, parents and siblings
--Link 2 thoughts together, with different bound types, and unlink them too
+-See a thought, its text + url, children, parents and siblings [DONE]
+-Link 2 thoughts together, with different bound types, and unlink them too [DONE]
     --> In fact we can choose between 4 states : parent-child, child-parent, siblings, and unrelated.
--navigate from a thought to others
--search thoughts by name
+-navigate from a thought to others [DONE]
+-search thoughts by name [DONE]
 -load and save graph
 -perform analytics
 
@@ -29,3 +29,11 @@ which would write in a format where the only available informations would be the
 
 What can 2 thoughts be? -> They have to choose one between siblings, parent-child and child-parent. But any of those
 3 relationships can work with a one-common-parent relationship. Therefore, we need to check that in childrenOfParents.
+
+IMAGES: We can add the image attachments to our own structure. If a node doesn't have an image but has an URL, we can,
+with some http, retrieve the 1st image on the site, and use it as our images. Then, we can, in the graph representation,
+use that image instead of the circle we're using now. And also, we can maybe use our graph drawing to come up with a
+stable graph plane projection, that would then used to create a graph with javafx buttons and lines, or something along
+those lines. That's a hella floppa sweetness of an idea.
+Also, we can do something fun : we find the API of a nice AI image generator that uses text (like AICurioBot on twitter)
+and assign the image obtained by giving it the node's name to each node that doesn't have an image yet

@@ -30,14 +30,10 @@ public final class SimpleUIState implements UIState {
 
     public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode) {
         this.focusNodeProperty = new SimpleObjectProperty<>();
-        //this.focusNodeProperty.set(focusNode);
         this.selectedNodeProperty = new SimpleObjectProperty<>();
-        //this.selectedNodeProperty.set(focusNode);
 
         this.selectedNodeTextProperty = new SimpleStringProperty();
-//        this.selectedNodeTextProperty.set(focusNode.text());
         this.selectedNodeUrlProperty = new SimpleStringProperty();
-//        this.selectedNodeUrlProperty.set(focusNode.url());
 
         this.graphState = gs;
 
@@ -47,19 +43,17 @@ public final class SimpleUIState implements UIState {
         childrenOfParents = FXCollections.observableArrayList();
 
         updateFocusNode(focusNode);
+
+        selectedNodeTextProperty.addListener((ov, o, n) ->
+                getSelectedNode().setText(selectedNodeTextProperty.get()));
+        selectedNodeUrlProperty.addListener((ov, o, n) ->
+                getSelectedNode().setUrl(selectedNodeUrlProperty.get()));
     }
 
     @Override
     public void updateFocusNode(ModifiableNode node) {
         focusNodeProperty.set(node);
-        siblings.setAll(node.siblings());
-        children.setAll(node.children());
-        parents.setAll(node.parents());
-        childrenOfParents.setAll(childrenOfParents(node));
-        sortAlphabetically(siblings);
-        sortAlphabetically(children);
-        sortAlphabetically(parents);
-        sortAlphabetically(childrenOfParents);
+        refreshLinks();
         updateSelectedNode(node);
     }
 
@@ -68,6 +62,18 @@ public final class SimpleUIState implements UIState {
         selectedNodeProperty.set(node);
         selectedNodeTextProperty.set(node.text());
         selectedNodeUrlProperty.set(node.url());
+    }
+
+    @Override
+    public void refreshLinks() {
+        siblings.setAll(getFocusNode().siblings());
+        children.setAll(getFocusNode().children());
+        parents.setAll(getFocusNode().parents());
+        childrenOfParents.setAll(childrenOfParents(getFocusNode()));
+        sortAlphabetically(siblings);
+        sortAlphabetically(children);
+        sortAlphabetically(parents);
+        sortAlphabetically(childrenOfParents);
     }
 
     @Override

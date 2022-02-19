@@ -8,6 +8,10 @@ public interface MutableGraphState {
 
     List<Node> searchNode(String key);
 
+    void addNode(ModifiableNode newNode);
+
+    void removeNode(ModifiableNode toRemove);
+
     void connectParentChild(ModifiableNode parent, ModifiableNode child);
 
     void connectSiblings(ModifiableNode s1, ModifiableNode s2);

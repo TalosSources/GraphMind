@@ -21,7 +21,7 @@ public class DrawGraph {
     OK now the next thing to do : a distance more than which the links cannot stretch. Use Sebastian Lague algorithm.
      */
     public static int RADIUS = 7;
-    public static double DISTANCE = 100;
+    public static double DISTANCE = 75;
     public static double k = 1;
     public static double g = 0;
 
@@ -35,7 +35,7 @@ public class DrawGraph {
     final static public Random RNG = new Random();
 
     public static void performDrawing(MutableGraphState thoughtGraph, ModifiableNode startingNode) {
-        BufferedImage image = new BufferedImage(1500, 1000, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
 
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
@@ -53,7 +53,7 @@ public class DrawGraph {
             ++moiIndex;
         }
         Graph graph = graphFromGraph(thoughtGraph);
-        int n = thoughtGraph.getGraph().size();
+        int n = graph.graph.size();
         Bounds bounds = new Bounds(RADIUS, image.getHeight() - RADIUS, RADIUS, image.getWidth() - RADIUS);
         PhysicGraph pg = new PhysicGraph(graph, n, bounds);
 //        int[] colors = new int[n];
@@ -139,7 +139,7 @@ public class DrawGraph {
                 }
 
                 object.updatePosition(deltaTime);
-                object.checkPhysics();
+                //object.checkPhysics();
                 positions.add(new Point((int)object.getPosition().x, (int)object.getPosition().y));
 
                 ++i;
@@ -155,13 +155,13 @@ public class DrawGraph {
     private static void removeDistantVertices(Graph graph, int[] levels, int bound) {
         for(List<Integer> l : graph.graph) {
             List<Integer> toRemove = new LinkedList<>();
-            for (int i : l) if (levels[i] > bound) toRemove.add(i);
+            for (int i : l) if (levels[i] > bound || levels[i] == -1)  toRemove.add(i);
             l.removeAll(toRemove);
         }
 
         List<Integer> toRemove = new LinkedList<>();
         for(int i = 0; i < graph.graph.size(); ++i)
-            if(levels[i] > bound) toRemove.add(i);
+            if(levels[i] > bound || levels[i] == -1) toRemove.add(i);
 
         for(int i : toRemove) graph.graph.set(i, null);
 

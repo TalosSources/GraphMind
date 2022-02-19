@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Set;
 
 public class HelperMethods {
     public static <T> String printCollection(Collection<T> collection) {
@@ -46,5 +47,10 @@ public class HelperMethods {
             }
             garbage.delete();
         }
+    }
+
+    public static <T> T anyElement(Set<T> set) {
+        for(T elem : set) return elem;
+        throw new IllegalArgumentException();
     }
 }

@@ -7,6 +7,8 @@ import ch.talos.gui.UIState;
 import ch.talos.model.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -25,14 +27,15 @@ public class Main extends Application {
 
     public static void main(String[] args){
         launch(args);
-//        simpleTests();
+        //simpleTests();
 //        uglyDrawing();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         Stage mainWindow = new Stage(StageStyle.DECORATED);
-        mainWindow.initModality(Modality.APPLICATION_MODAL);
+        mainWindow.initModality(Modality.WINDOW_MODAL);
+
 
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
         Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
@@ -52,10 +55,9 @@ public class Main extends Application {
         Scene scene = new Scene(mainPane);   //setups the scene with the above
         mainWindow.setScene(scene);
 
-        mainWindow.show();
         mainWindow.setTitle("GraphMind");
-
-        System.out.println("isJavaFxThread? " + isFxApplicationThread());
+        mainWindow.show();
+        mainWindow.setMaximized(true);
     }
 
     public static void uglyDrawing() {
@@ -81,7 +83,7 @@ public class Main extends Application {
 
         /**/
         BreadthFirstSearch bfs = new BreadthFirstSearch(graph);
-        bfs.BFSTest("Pensées");
+        bfs.BFSTest("Moi");
 
         /**
          for(Node n : graph)

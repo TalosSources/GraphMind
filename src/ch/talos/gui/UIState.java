@@ -33,6 +33,10 @@ public interface UIState {
 
     ObjectProperty<ModifiableNode> selectedNodeProperty();
 
+    StringProperty focusNodeNameProperty();
+
+    StringProperty selectedNodeNameProperty();
+
     StringProperty selectedNodeTextProperty();
 
     StringProperty selectedNodeUrlProperty();

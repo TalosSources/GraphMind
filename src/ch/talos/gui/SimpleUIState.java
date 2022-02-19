@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public final class SimpleUIState implements UIState {
     private final MutableGraphState graphState;
@@ -20,6 +21,8 @@ public final class SimpleUIState implements UIState {
     private final ObjectProperty<ModifiableNode> focusNodeProperty;
     private final ObjectProperty<ModifiableNode> selectedNodeProperty;
 
+    private final StringProperty focusNodeNameProperty;
+    private final StringProperty selectedNodeNameProperty;
     private final StringProperty selectedNodeTextProperty;
     private final StringProperty selectedNodeUrlProperty;
 
@@ -32,6 +35,8 @@ public final class SimpleUIState implements UIState {
         this.focusNodeProperty = new SimpleObjectProperty<>();
         this.selectedNodeProperty = new SimpleObjectProperty<>();
 
+        this.focusNodeNameProperty = new SimpleStringProperty();
+        this.selectedNodeNameProperty = new SimpleStringProperty();
         this.selectedNodeTextProperty = new SimpleStringProperty();
         this.selectedNodeUrlProperty = new SimpleStringProperty();
 
@@ -44,6 +49,8 @@ public final class SimpleUIState implements UIState {
 
         updateFocusNode(focusNode);
 
+        focusNodeNameProperty.addListener((ov, o, n) ->
+                getFocusNode().setName(focusNodeNameProperty.get()));
         selectedNodeTextProperty.addListener((ov, o, n) ->
                 getSelectedNode().setText(selectedNodeTextProperty.get()));
         selectedNodeUrlProperty.addListener((ov, o, n) ->
@@ -55,17 +62,29 @@ public final class SimpleUIState implements UIState {
         focusNodeProperty.set(node);
         refreshLinks();
         updateSelectedNode(node);
+        focusNodeNameProperty.set(Objects.isNull(node) ?
+                "Select a node or create one :)" :
+                node.name());
     }
 
     @Override
     public void updateSelectedNode(ModifiableNode node) {
+        boolean n = Objects.isNull(node);
         selectedNodeProperty.set(node);
-        selectedNodeTextProperty.set(node.text());
-        selectedNodeUrlProperty.set(node.url());
+        selectedNodeNameProperty.set(n ? "" : node.name());
+        selectedNodeTextProperty.set(n ? "" : node.text());
+        selectedNodeUrlProperty.set(n ? "" : node.url());
     }
 
     @Override
     public void refreshLinks() {
+        if(Objects.isNull(getFocusNode())) {
+            siblings.removeAll();
+            children.removeAll();
+            parents.removeAll();
+            childrenOfParents.removeAll();
+            return;
+        }
         siblings.setAll(getFocusNode().siblings());
         children.setAll(getFocusNode().children());
         parents.setAll(getFocusNode().parents());
@@ -114,6 +133,16 @@ public final class SimpleUIState implements UIState {
     @Override
     public ObjectProperty<ModifiableNode> selectedNodeProperty() {
         return selectedNodeProperty;
+    }
+
+    @Override
+    public StringProperty focusNodeNameProperty() {
+        return focusNodeNameProperty;
+    }
+
+    @Override
+    public StringProperty selectedNodeNameProperty() {
+        return selectedNodeNameProperty;
     }
 
     @Override

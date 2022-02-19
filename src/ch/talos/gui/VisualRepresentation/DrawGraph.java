@@ -76,7 +76,7 @@ public class DrawGraph {
 
             //time stuff
             try {
-                Thread.sleep(1);
+                Thread.sleep(8);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -147,7 +147,7 @@ public class DrawGraph {
 
             drawGraph(positions, graph, image, colors);
 
-            image.flush();
+            //image.flush();
             label.setIcon(new ImageIcon(image));
         }
     }

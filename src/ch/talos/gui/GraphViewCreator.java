@@ -10,6 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,18 +47,21 @@ public final class GraphViewCreator {
     public static Pane graphView(UIState uiState) {
         Pane mainGraphPane = graphPane(uiState);
 
-        Text focusedNodeName = new Text();
-        focusedNodeName.textProperty().bind(uiState.focusNodeProperty().asString());
+        TextField focusedNodeName = new TextField();
+        focusedNodeName.textProperty().bindBidirectional(uiState.focusNodeNameProperty());
         focusedNodeName.fontProperty().set(Font.font("Helvetica", 30));
+        focusedNodeName.onMouseClickedProperty().set(e ->
+                uiState.updateSelectedNode(uiState.getFocusNode()));
 
         Text selectedNodeName = new Text();
-        selectedNodeName.textProperty().bind(uiState.selectedNodeProperty().asString());
+        selectedNodeName.textProperty().bind(uiState.selectedNodeNameProperty());
         selectedNodeName.fontProperty().set(Font.font("Helvetica", 20));
 
         TextArea nodeText = new TextArea();
         nodeText.textProperty().bindBidirectional(uiState.selectedNodeTextProperty());
         nodeText.setWrapText(true);
         nodeText.setPrefWidth(600);
+        nodeText.setPrefHeight(500);
 
         nodeText.setEditable(true);
         //nodeText.setWrappingWidth(400);
@@ -101,14 +105,16 @@ public final class GraphViewCreator {
         Button addNodeButton = new Button("Create a new Node");
         addNodeButton.setOnAction(e -> addNodePopup(uiState));
 
-        Button deleteNode = new Button("Delete Node");
+        Button deleteNode = new Button("Delete active node");
         deleteNode.setOnAction(e -> {
             ModifiableNode newFocusNode = newFocusNode(uiState.getFocusNode());
             uiState.graphState().removeNode(uiState.getFocusNode());
             uiState.updateFocusNode(newFocusNode);
         });
+        VBox buttons = new VBox(drawingButton, addNodeButton, deleteNode);
+        buttons.setSpacing(8);
+        HBox drawButtonAndSearchbar = new HBox(buttons, new Separator(), searchBox(uiState));
 
-        HBox drawButtonAndSearchbar = new HBox(new VBox(drawingButton, addNodeButton, deleteNode), searchBox(uiState));
         VBox listAndName = new VBox(focusedNodeName, new Separator(), mainGraphPane,
                 new Separator(), drawButtonAndSearchbar);
 
@@ -117,8 +123,8 @@ public final class GraphViewCreator {
 
     private static ModifiableNode newFocusNode(ModifiableNode old) {
         if(!old.parents().isEmpty()) return HelperMethods.anyElement(old.parents());
-        if(!old.children().isEmpty()) return HelperMethods.anyElement(old.parents());
-        if(!old.siblings().isEmpty()) return HelperMethods.anyElement(old.parents());
+        if(!old.children().isEmpty()) return HelperMethods.anyElement(old.children());
+        if(!old.siblings().isEmpty()) return HelperMethods.anyElement(old.siblings());
         return null;
     }
 
@@ -147,7 +153,8 @@ public final class GraphViewCreator {
 
         ObservableList<ModifiableNode> results = FXCollections.observableArrayList();
         ListView<ModifiableNode> resultsView = new ListView<>(results);
-        resultsView.onMouseClickedProperty().set(buttonEvent(resultsView, uiState));
+        addListenerList(resultsView, uiState);
+        //resultsView.onMouseClickedProperty().set(buttonEvent(resultsView, uiState));
 
         searchField.textProperty().addListener(event -> {
             results.setAll(KeySearch.search(uiState.graphState().getGraph(), searchField.textProperty().get()));
@@ -157,7 +164,7 @@ public final class GraphViewCreator {
         Button addChild = addLinkButton("Add child", LinkType.CHILD, uiState, resultsView);
         Button addParent = addLinkButton("Add parent", LinkType.PARENT, uiState, resultsView);
         Button addSibling = addLinkButton("Add sibling", LinkType.SIBLING, uiState, resultsView);
-        Button disconnect = new Button("disconnect");
+        Button disconnect = new Button("Disconnect");
         disconnect.setOnAction(e ->
                 {
                     uiState.graphState().disconnectNodes(
@@ -165,8 +172,12 @@ public final class GraphViewCreator {
                     uiState.refreshLinks();
                 });
         HBox linkButtons = new HBox(addChild, addParent, addSibling, disconnect);
+        linkButtons.setSpacing(5);
 
-        return new VBox(searchField, resultsView, linkButtons);
+        VBox searchBox = new VBox(searchField, resultsView, linkButtons);
+        searchBox.setSpacing(8);
+
+        return searchBox;
     }
 
     private static void addLink(ModifiableNode selectedItem, UIState uiState, LinkType type) {
@@ -231,7 +242,7 @@ public final class GraphViewCreator {
         createButton.setOnAction(event -> {
             ModifiableNode newNode = new SimpleNode(nameField.getText());
             //TODO : find a way to generate new ID's (that must be unique)
-            newNode.setId("agpgkggqp109509a0bka");
+            HelperMethods.setUniqueId(newNode, uiState.graphState().getGraph());
             uiState.graphState().addNode(newNode);
             popup.close();
         });

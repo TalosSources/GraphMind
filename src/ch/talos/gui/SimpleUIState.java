@@ -4,6 +4,7 @@ import ch.talos.JSONSaveManager;
 import ch.talos.model.ModifiableNode;
 import ch.talos.model.MutableGraphState;
 import ch.talos.model.Node;
+import ch.talos.model.SimpleGraphState;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,13 +12,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public final class SimpleUIState implements UIState {
-    private final MutableGraphState graphState;
+    private MutableGraphState graphState;
 
     private final ObjectProperty<ModifiableNode> focusNodeProperty;
     private final ObjectProperty<ModifiableNode> selectedNodeProperty;
@@ -34,7 +32,7 @@ public final class SimpleUIState implements UIState {
 
     private final StringProperty saveLocation;
 
-    public SimpleUIState(MutableGraphState gs, ModifiableNode focusNode, String saveLocation) {
+    public SimpleUIState(String saveLocation, String startId) {
         this.focusNodeProperty = new SimpleObjectProperty<>();
         this.selectedNodeProperty = new SimpleObjectProperty<>();
 
@@ -45,24 +43,25 @@ public final class SimpleUIState implements UIState {
 
         this.saveLocation = new SimpleStringProperty();
 
-        this.graphState = gs;
-
         siblings = FXCollections.observableArrayList();
         children = FXCollections.observableArrayList();
         parents = FXCollections.observableArrayList();
         childrenOfParents = FXCollections.observableArrayList();
 
-        updateFocusNode(focusNode);
-
         this.saveLocation.set(saveLocation);
-        //JSONSaveManager.generateGraphFromJSON(this.saveLocation.get());
 
-        focusNodeNameProperty.addListener((ov, o, n) ->
-                getFocusNode().setName(focusNodeNameProperty.get()));
-        selectedNodeTextProperty.addListener((ov, o, n) ->
-                getSelectedNode().setText(selectedNodeTextProperty.get()));
-        selectedNodeUrlProperty.addListener((ov, o, n) ->
-                getSelectedNode().setUrl(selectedNodeUrlProperty.get()));
+        loadSave(startId);
+
+        focusNodeNameProperty.addListener((ov, o, n) -> {
+             if(!Objects.isNull(getFocusNode())) getFocusNode().setName(focusNodeNameProperty.get());
+        });
+        selectedNodeTextProperty.addListener((ov, o, n) -> {
+            if(!Objects.isNull(getFocusNode())) getSelectedNode().setText(selectedNodeTextProperty.get());
+        });
+        selectedNodeUrlProperty.addListener((ov, o, n) -> {
+            if(!Objects.isNull(getFocusNode())) getSelectedNode().setUrl(selectedNodeUrlProperty.get());
+        });
+
     }
 
     @Override
@@ -166,6 +165,28 @@ public final class SimpleUIState implements UIState {
     @Override
     public ObservableList<ModifiableNode> childrenOfParents() {
         return childrenOfParents;
+    }
+
+    @Override
+    public StringProperty saveLocation() {
+        return saveLocation;
+    }
+
+    public void loadSave(String startId) {
+        Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(saveLocation.get());
+        this.graphState = new SimpleGraphState(graph);
+
+        ModifiableNode startNode = null;
+        if(!Objects.isNull(startId))
+            for(ModifiableNode node : this.graphState.getGraph())
+                if(startId.equals(node.id())) startNode = node;
+        focusNodeProperty.set(startNode);
+        updateFocusNode(getFocusNode());
+    }
+
+    public void writeSave() {
+        System.out.println("Writing to " + saveLocation.get());
+        JSONSaveManager.saveJSONFromGraph(graphState.getGraph(), saveLocation().get());
     }
 
     private static List<ModifiableNode> childrenOfParents(ModifiableNode node) {

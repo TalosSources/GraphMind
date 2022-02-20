@@ -24,10 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 import javafx.stage.Window;
 
 import java.awt.*;
@@ -89,8 +86,10 @@ public final class GraphViewCreator {
         });
 
         Button drawingButton = new Button("Graph Visualisation");
-        drawingButton.setOnAction(event -> new Thread(() ->
-                DrawGraph.performDrawing(uiState.graphState(), uiState.getFocusNode())).start());
+        drawingButton.setOnAction(event -> {
+            if(Objects.isNull(uiState.getFocusNode())) return;
+            new Thread(() -> DrawGraph.performDrawing(uiState.graphState(), uiState.getFocusNode())).start();
+        });
 
         VBox textAndURL = new VBox(selectedNodeName, new Separator(), nodeText, new Separator(), urlField, urlButton);
 
@@ -110,6 +109,7 @@ public final class GraphViewCreator {
 
         Button deleteNode = new Button("Delete active node");
         deleteNode.setOnAction(e -> {
+            if(Objects.isNull(uiState.getFocusNode())) return;
             ModifiableNode newFocusNode = newFocusNode(uiState.getFocusNode());
             uiState.graphState().removeNode(uiState.getFocusNode());
             uiState.updateFocusNode(newFocusNode);
@@ -117,14 +117,23 @@ public final class GraphViewCreator {
         VBox buttons = new VBox(drawingButton, addNodeButton, deleteNode);
         buttons.setSpacing(8);
 
-
-        Button fileChooserButton = new Button("Choose File");
-        FileChooser fileChooser = new FileChooser();
+        Button fileChooserButton = new Button("Select save directory");
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        TextField saveDirectory = new TextField();
+        saveDirectory.setEditable(false);
+        saveDirectory.setPrefWidth(400);
+        saveDirectory.textProperty().bind(uiState.saveLocation());
         fileChooserButton.setOnAction(e -> {
-            File savePlace = fileChooser.showOpenDialog(mainWindow);
+            File savePlace = directoryChooser.showDialog(mainWindow);
+            uiState.saveLocation().set(savePlace.getAbsolutePath());
         });
+        Button loadButton = new Button("Load graph");
+        loadButton.setOnAction(e -> uiState.loadSave(null));
+        Button writeButton = new Button("Save graph");
+        writeButton.setOnAction(e -> uiState.writeSave());
+        VBox saveBox = new VBox(fileChooserButton, saveDirectory, new Separator(), loadButton, writeButton);
 
-        HBox drawButtonAndSearchbar = new HBox(buttons, new Separator(), searchBox(uiState), fileChooserButton);
+        HBox drawButtonAndSearchbar = new HBox(buttons, new Separator(), searchBox(uiState), saveBox);
 
         VBox listAndName = new VBox(focusedNodeName, new Separator(), mainGraphPane,
                 new Separator(), drawButtonAndSearchbar);
@@ -192,6 +201,7 @@ public final class GraphViewCreator {
     }
 
     private static void addLink(ModifiableNode selectedItem, UIState uiState, LinkType type) {
+        if(Objects.isNull(selectedItem) || Objects.isNull(uiState.getFocusNode())) return;
         System.out.println("adding " + type + selectedItem + " to " + uiState.getFocusNode());
         switch(type) {
             case CHILD: uiState.graphState().connectParentChild(uiState.getFocusNode(), selectedItem);

@@ -40,6 +40,12 @@ public interface UIState {
     StringProperty selectedNodeTextProperty();
 
     StringProperty selectedNodeUrlProperty();
+
+    StringProperty saveLocation();
+
+    void loadSave(String startId);
+
+    void writeSave();
 }
 
 

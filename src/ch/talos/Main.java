@@ -38,15 +38,8 @@ public class Main extends Application {
         mainWindow.initModality(Modality.WINDOW_MODAL);
 
         String ownJsonDirectory = HelperMethods.contentOfFile("ownSaveLocation");
-        Set<ModifiableNode> graph = JSONSaveManager.generateGraphFromJSON(ownJsonDirectory);
 
-        ModifiableNode moiNode = null;
-        for(ModifiableNode node : graph)
-            if (node.name().equals("Moi")) moiNode = node;
-
-        MutableGraphState graphState = new SimpleGraphState(graph);
-
-        UIState uiState = new SimpleUIState(graphState, moiNode);
+        UIState uiState = new SimpleUIState(ownJsonDirectory, null);
 
         Pane mainPane = GraphViewCreator.graphView(uiState, mainWindow);
         mainPane.setPrefSize(1600, 650);
@@ -55,7 +48,7 @@ public class Main extends Application {
 
         mainWindow.setTitle("GraphMind");
         mainWindow.show();
-        mainWindow.setMaximized(true);
+//        mainWindow.setMaximized(true);
     }
 
     public static void uglyDrawing() {

@@ -10,6 +10,7 @@ Little Stuff to do :
 -add the missing or locked features : multiple urls, maybe multiple notes, stuff like that
 -really clean out the drawGraph stuff if motivation
 -optimize search : https://stackoverflow.com/questions/9636371/efficient-data-structure-for-substring-search
+-the search window should update after some events (not just after the text field changes)
 
 In notepad : change the encoding from UTF-8 BOM to UTF-8.
 Ideally I would want to do that automatically
@@ -26,6 +27,8 @@ List of features that should be available in the client :
 The save tool : It would have a button to load a save, that would read json files from a directory inputted by the user,
 that should work with both external jsons and the ones we write. We therefore would also have a button to write a json,
 which would write in a format where the only available informations would be the one needed directly by this program.
+We also would like to save some more informations : Namely, what node should be loaded first, and what is the default
+save location?
 
 What can 2 thoughts be? -> They have to choose one between siblings, parent-child and child-parent. But any of those
 3 relationships can work with a one-common-parent relationship. Therefore, we need to check that in childrenOfParents.

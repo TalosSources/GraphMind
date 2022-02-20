@@ -2,6 +2,7 @@ package ch.talos.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class SimpleGraphState implements MutableGraphState{
@@ -56,6 +57,7 @@ public class SimpleGraphState implements MutableGraphState{
 
     @Override
     public void disconnectNodes(ModifiableNode node1, ModifiableNode node2) {
+        if(Objects.isNull(node1) || Objects.isNull(node2)) return;
         node1.removeChild(node2);
         node1.removeParent(node2);
         node1.removeSibling(node2);

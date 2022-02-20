@@ -20,13 +20,15 @@ public class DrawGraph {
 
     OK now the next thing to do : a distance more than which the links cannot stretch. Use Sebastian Lague algorithm.
      */
-    public static int RADIUS = 7;
+    public static int RADIUS = 4;
     public static double DISTANCE = 75;
     public static double k = 1;
     public static double g = 0;
 
     public static double beginIter = 100;
     public static double iter = 0;
+
+    public static int LEVEL = 3;
 
     public static int LINE_COLOR = 0xff4f4f4f;
     public static int NODE_COLOR = 0xffff00ff;
@@ -66,7 +68,7 @@ public class DrawGraph {
             if(levels[i] == -1) colors[i] = 0x0;
             else colors[i] = levelColors[levels[i]];
         }
-        removeDistantVertices(graph, levels, 2);
+        removeDistantVertices(graph, levels, LEVEL);
 
         /* -------------------- */
 

@@ -42,7 +42,7 @@ public class Main extends Application {
         UIState uiState = new SimpleUIState(ownJsonDirectory, null);
 
         Pane mainPane = GraphViewCreator.graphView(uiState, mainWindow);
-        mainPane.setPrefSize(1600, 650);
+        mainPane.setPrefSize(1600, 900);
         Scene scene = new Scene(mainPane);   //setups the scene with the above
         mainWindow.setScene(scene);
 

@@ -125,7 +125,8 @@ public final class GraphViewCreator {
         saveDirectory.textProperty().bind(uiState.saveLocation());
         fileChooserButton.setOnAction(e -> {
             File savePlace = directoryChooser.showDialog(mainWindow);
-            uiState.saveLocation().set(savePlace.getAbsolutePath());
+            if(!Objects.isNull(savePlace))
+                uiState.saveLocation().set(savePlace.getAbsolutePath());
         });
         Button loadButton = new Button("Load graph");
         loadButton.setOnAction(e -> uiState.loadSave(null));
@@ -178,6 +179,7 @@ public final class GraphViewCreator {
 
         searchField.textProperty().addListener(event -> {
             results.setAll(KeySearch.search(uiState.graphState().getGraph(), searchField.textProperty().get()));
+            resultsView.scrollTo(0);
         });
 
         //Button addChild = new Button("Add child");

@@ -16,7 +16,8 @@ public class JSONSaveManager {
         Map<String, ModifiableNode> map = new TreeMap<>();
 
             //First we use the thought file to create all the nodes
-        BufferedReader sourceReader = fileBufferedReader(directory + "thoughts.json");
+        BufferedReader sourceReader = fileBufferedReader(directory + "\\thoughts.json");
+        if(Objects.isNull(sourceReader)) return emptyGraph();
         try {
             while(sourceReader.ready()) {
                 String jsonString = sourceReader.readLine();
@@ -39,7 +40,7 @@ public class JSONSaveManager {
         }
 
             //Then we use the links file to link them
-        BufferedReader linksReader = fileBufferedReader(directory + "links.json");
+        BufferedReader linksReader = fileBufferedReader(directory + "\\links.json");
         try {
             while(linksReader.ready()) {
                 String jsonString = linksReader.readLine();
@@ -66,7 +67,7 @@ public class JSONSaveManager {
         }
 
             //After that we fill in the attachments
-        BufferedReader attachmentsReader = fileBufferedReader(directory + "attachments.json");
+        BufferedReader attachmentsReader = fileBufferedReader(directory + "\\attachments.json");
         try {
             while(attachmentsReader.ready()) {
                 String jsonString = attachmentsReader.readLine();
@@ -84,7 +85,7 @@ public class JSONSaveManager {
                     case 1 :
                         String name = object.getString("Name");
                         if(name.equals("Notes.md") || name.equals("Notes.txt")) {
-                            String text = HelperMethods.contentOfFile(directory + node.id() + "\\" + name);
+                            String text = HelperMethods.contentOfFile(directory + '\\' + node.id() + "\\" + name);
                             node.setText(text);
                         }
                         break;
@@ -120,9 +121,9 @@ public class JSONSaveManager {
         HelperMethods.deleteDirectory(dir);
 
         try {
-            BufferedWriter thoughtsWriter = fileBufferedWriter(directory + "thoughts.json");
-            BufferedWriter linksWriter = fileBufferedWriter(directory + "links.json");
-            BufferedWriter attachmentsWriter = fileBufferedWriter(directory + "attachments.json");
+            BufferedWriter thoughtsWriter = fileBufferedWriter(directory + "\\thoughts.json");
+            BufferedWriter linksWriter = fileBufferedWriter(directory + "\\links.json");
+            BufferedWriter attachmentsWriter = fileBufferedWriter(directory + "\\attachments.json");
 
             Set<Node> visited = new TreeSet<>();
 
@@ -150,7 +151,7 @@ public class JSONSaveManager {
                     text.put("Type", 1);
                     text.put("Name", "Notes.txt");
 
-                    File thoughtDir = new File(directory + u.id());
+                    File thoughtDir = new File(directory + '\\' + u.id());
                     thoughtDir.mkdirs();
 
                     attachmentsWriter.write(text.toString() + "\n");
@@ -195,6 +196,7 @@ public class JSONSaveManager {
             fileReader = new FileReader(sourceFile);
         } catch (FileNotFoundException e) {
             System.out.println("Source file not found :(. File was " + directory);
+            return null;
         }
 
         return new BufferedReader(fileReader);
@@ -208,8 +210,13 @@ public class JSONSaveManager {
             fileWriter = new FileWriter(sourceFile);
         } catch (IOException e) {
             System.out.println("An error happened during writing :( ");
+            return null;
         }
 
         return new BufferedWriter(fileWriter);
+    }
+
+    public static Set<ModifiableNode> emptyGraph() {
+        return new TreeSet<>();
     }
 }

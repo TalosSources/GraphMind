@@ -20,24 +20,24 @@ public class DrawGraph {
 
     OK now the next thing to do : a distance more than which the links cannot stretch. Use Sebastian Lague algorithm.
      */
-    public static int RADIUS = 4;
-    public static double DISTANCE = 75;
+    public static int RADIUS = 7;
+    public static double DISTANCE = 100;
     public static double k = 1;
     public static double g = 0;
 
     public static double beginIter = 100;
     public static double iter = 0;
 
-    public static int LEVEL = 3;
+    public static int LEVEL = 2;
 
-    public static int LINE_COLOR = 0xff4f4f4f;
+    public static int LINE_COLOR = 0xff2f8f2f;
     public static int NODE_COLOR = 0xffff00ff;
     public static int BACKGROUND_COLOR = 0xFF000007;
 
     final static public Random RNG = new Random();
 
     public static void performDrawing(MutableGraphState thoughtGraph, ModifiableNode startingNode) {
-        BufferedImage image = new BufferedImage(800, 800, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(1400, 1000, BufferedImage.TYPE_INT_ARGB);
 
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
@@ -46,7 +46,11 @@ public class DrawGraph {
         frame.pack();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        label.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+                cursorImg, new java.awt.Point(0, 0), "blank cursor");
+        frame.getContentPane().setCursor(blankCursor);
 
         /* GRAPH STUFF */
         int moiIndex = 0;
@@ -61,8 +65,7 @@ public class DrawGraph {
 //        int[] colors = new int[n];
 //        for(int i = 0; i < n; ++i) colors[i] = NODE_COLOR;
         int[] levels = computeLevels(graph, moiIndex);
-        int[] levelColors = {/*0xffff00ff, */0xffff007f, 0xffff0000, /*0xffff7f00,*/ 0xffffff00,
-                0xff7fff00, 0xff00ff00, 0xff00ff7f, 0xff00ffff, 0xff007fff, 0xff000000, 0xff000000, 0xff000000};
+        int[] levelColors = {0xffffffff, 0xffff00ff, 0xff0000ff, 0,0,0,0,0,0,0,0,0,0,0};
         int[] colors = new int[levels.length];
         for(int i = 0; i < colors.length; ++i) {
             if(levels[i] == -1) colors[i] = 0x0;
